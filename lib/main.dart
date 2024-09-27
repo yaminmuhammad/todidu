@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todidu/view/widget/home_view.dart';
+import 'package:todidu/views/home_view.dart';
 
 Future<void> main() async {
   runApp(const MyApp());

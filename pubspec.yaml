@@ -41,12 +41,27 @@ dependencies:
 
   # Generate RFC4122
   uuid: ^4.5.0
+
+  # Internationalization
   intl: ^0.19.0
+
+  # Animation
   animate_do: ^3.3.4
+
+  # Dialog
   panara_dialogs: ^0.1.5
+
+  # Animation as json
   lottie: ^3.1.2
+
+  # Toast
   ftoast: ^2.0.0
+
+  # Flutter Slider Drawer
   flutter_slider_drawer: ^2.1.3
+
+  # Flutter Dateicker cupertino
+  flutter_cupertino_date_picker_fork: ^1.0.7
 
 dev_dependencies:
   flutter_test:

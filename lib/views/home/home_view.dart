@@ -102,7 +102,32 @@ class _HomeViewState extends State<HomeView> {
                 itemCount: 20,
                 scrollDirection: Axis.vertical,
                 itemBuilder: (context, index) {
-                  return const TaskWidget();
+                  return Dismissible(
+                    direction: DismissDirection.horizontal,
+                    onDismissed: (_) {
+                      // remove current task from db
+                    },
+                    background: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.delete_outline,
+                          color: Colors.grey,
+                        ),
+                        8.w,
+                        const Text(
+                          AppStr.deletedTask,
+                          style: TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                    key: Key(
+                      index.toString(),
+                    ),
+                    child: const TaskWidget(),
+                  );
                 },
               ),
             ),

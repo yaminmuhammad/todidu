@@ -75,6 +75,7 @@ class TaskWidget extends StatelessWidget {
           subtitle: const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Description of Task
               Text(
                 "Description",
                 style: TextStyle(

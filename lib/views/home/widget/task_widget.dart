@@ -66,7 +66,7 @@ class TaskWidget extends StatelessWidget {
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.w500,
-                decoration: TextDecoration.lineThrough,
+                // decoration: TextDecoration.lineThrough,
               ),
             ),
           ),
@@ -75,6 +75,7 @@ class TaskWidget extends StatelessWidget {
           subtitle: const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Description of Task
               Text(
                 "Description",
                 style: TextStyle(

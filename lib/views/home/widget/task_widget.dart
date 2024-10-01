@@ -66,7 +66,7 @@ class TaskWidget extends StatelessWidget {
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.w500,
-                decoration: TextDecoration.lineThrough,
+                // decoration: TextDecoration.lineThrough,
               ),
             ),
           ),

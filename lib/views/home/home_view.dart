@@ -7,6 +7,7 @@ import 'package:todidu/utils/app_colors.dart';
 import 'package:todidu/utils/app_str.dart';
 import 'package:todidu/utils/constants.dart';
 import 'package:todidu/views/home/components/fab.dart';
+import 'package:todidu/views/home/components/home_app_bar.dart';
 import 'package:todidu/views/home/widget/task_widget.dart';
 
 class HomeView extends StatefulWidget {
@@ -35,130 +36,151 @@ class _HomeViewState extends State<HomeView> {
       floatingActionButton: const Fab(),
 
       // Body
-      body: SizedBox(
-        width: double.infinity,
-        height: double.infinity,
-        child: Column(
-          children: [
-            // Custom App bar
-            Container(
-              margin: const EdgeInsets.only(
-                top: 60,
-              ),
-              width: double.infinity,
-              height: 100,
-              // color: Colors.red,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // progress indicator
-                  const SizedBox(
-                    width: 30,
-                    height: 30,
-                    child: CircularProgressIndicator(
-                      value: 1 / 3,
-                      backgroundColor: Colors.grey,
-                      valueColor: AlwaysStoppedAnimation(
-                        AppColors.primaryColor,
-                      ),
+      body: SliderDrawer(
+        // Drawer
+        slider: Container(
+          color: Colors.red,
+        ),
+
+        appBar: const HomeAppBar(),
+
+        // main body
+        child: _buildHomeBody(textTheme),
+      ),
+    );
+  }
+
+  // Home Body
+
+  Widget _buildHomeBody(TextTheme textTheme) {
+    return SizedBox(
+      width: double.infinity,
+      height: double.infinity,
+      child: Column(
+        children: [
+          // Custom App bar
+          Container(
+            margin: const EdgeInsets.only(
+              top: 60,
+            ),
+            width: double.infinity,
+            height: 100,
+            // color: Colors.red,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // progress indicator
+                const SizedBox(
+                  width: 30,
+                  height: 30,
+                  child: CircularProgressIndicator(
+                    value: 1 / 3,
+                    backgroundColor: Colors.grey,
+                    valueColor: AlwaysStoppedAnimation(
+                      AppColors.primaryColor,
                     ),
                   ),
+                ),
 
-                  // Space
-                  25.w,
+                // Space
+                25.w,
 
-                  // top level task info
-                  Column(
+                // top level task info
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppStr.mainTitle,
+                      style: textTheme.displayLarge,
+                    ),
+                    3.h,
+                    Text(
+                      "1 of 3 task",
+                      style: textTheme.titleMedium,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          // Divider
+          const Padding(
+            padding: EdgeInsets.only(
+              top: 10,
+            ),
+            child: Divider(
+              thickness: 2,
+              indent: 100,
+            ),
+          ),
+
+          // Tasks
+          Expanded(
+            // width: double.infinity,
+            // height: 745,
+            child: testing.isNotEmpty
+                ? ListView.builder(
+                    itemCount: testing.length,
+                    scrollDirection: Axis.vertical,
+                    itemBuilder: (context, index) {
+                      return Dismissible(
+                        direction: DismissDirection.horizontal,
+                        onDismissed: (_) {
+                          // remove current task from db
+                        },
+                        background: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.delete_outline,
+                              color: Colors.grey,
+                            ),
+                            8.w,
+                            const Text(
+                              AppStr.deletedTask,
+                              style: TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                        key: Key(
+                          index.toString(),
+                        ),
+                        child: const TaskWidget(),
+                      );
+                    },
+                  )
+
+                // Task List is empty
+                : Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        AppStr.mainTitle,
-                        style: textTheme.displayLarge,
+                      // Lottie animation
+                      FadeIn(
+                        child: SizedBox(
+                          width: 200,
+                          height: 200,
+                          child: Lottie.asset(
+                            lottieURL,
+                            animate: testing.isNotEmpty ? false : true,
+                          ),
+                        ),
                       ),
-                      3.h,
-                      Text(
-                        "1 of 3 task",
-                        style: textTheme.titleMedium,
+
+                      // sub Text
+                      FadeInUp(
+                        from: 30,
+                        child: const Text(
+                          AppStr.doneAllTask,
+                        ),
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-
-            // Divider
-            const Padding(
-              padding: EdgeInsets.only(
-                top: 10,
-              ),
-              child: Divider(
-                thickness: 2,
-                indent: 100,
-              ),
-            ),
-
-            // Tasks
-            Expanded(
-              // width: double.infinity,
-              // height: 745,
-              child: testing.isNotEmpty
-                  ? ListView.builder(
-                      itemCount: testing.length,
-                      scrollDirection: Axis.vertical,
-                      itemBuilder: (context, index) {
-                        return Dismissible(
-                          direction: DismissDirection.horizontal,
-                          onDismissed: (_) {
-                            // remove current task from db
-                          },
-                          background: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.delete_outline,
-                                color: Colors.grey,
-                              ),
-                              8.w,
-                              const Text(
-                                AppStr.deletedTask,
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                          key: Key(
-                            index.toString(),
-                          ),
-                          child: const TaskWidget(),
-                        );
-                      },
-                    )
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        FadeIn(
-                          child: SizedBox(
-                            width: 200,
-                            height: 200,
-                            child: Lottie.asset(
-                              lottieURL,
-                              animate: testing.isNotEmpty ? false : true,
-                            ),
-                          ),
-                        ),
-                        FadeInUp(
-                          from: 30,
-                          child: const Text(
-                            AppStr.doneAllTask,
-                          ),
-                        ),
-                      ],
-                    ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

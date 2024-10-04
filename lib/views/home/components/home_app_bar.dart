@@ -1,8 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 
 class HomeAppBar extends StatefulWidget {
-  const HomeAppBar({super.key});
+  const HomeAppBar({
+    Key? key,
+    required this.drawerKey,
+  }) : super(key: key);
+
+  final GlobalKey<SliderDrawerState> drawerKey;
 
   @override
   State<HomeAppBar> createState() => _HomeAppBarState();
@@ -27,13 +33,16 @@ class _HomeAppBarState extends State<HomeAppBar>
     super.dispose();
   }
 
+  // on Toggle
   void onDrawerToggle() {
     setState(() {
       isDrawerOpen = !isDrawerOpen;
       if (isDrawerOpen) {
         animationController.forward();
+        widget.drawerKey.currentState!.openSlider();
       } else {
         animationController.reverse();
+        widget.drawerKey.currentState!.closeSlider();
       }
     });
   }
@@ -48,6 +57,7 @@ class _HomeAppBarState extends State<HomeAppBar>
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            // Menu Icon
             Padding(
               padding: const EdgeInsets.only(
                 left: 20,
@@ -61,14 +71,16 @@ class _HomeAppBarState extends State<HomeAppBar>
                 ),
               ),
             ),
+
+            // Trash Icon
             Padding(
               padding: const EdgeInsets.only(
                 right: 20,
               ),
               child: IconButton(
-                onPressed: onDrawerToggle,
-                icon: Icon(
-                  CupertinoIcons.trash_circle,
+                onPressed: () {},
+                icon: const Icon(
+                  CupertinoIcons.trash_fill,
                   size: 40,
                 ),
               ),

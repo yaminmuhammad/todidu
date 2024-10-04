@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todidu/views/tasks/widget/task_view_app_bar.dart';
 
 class TaskView extends StatefulWidget {
   const TaskView({super.key});
@@ -10,8 +11,8 @@ class TaskView extends StatefulWidget {
 class _TaskViewState extends State<TaskView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
+    return const Scaffold(
+      appBar: const TaskViewAppBar(),
     );
   }
 }

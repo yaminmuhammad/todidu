@@ -8,6 +8,7 @@ import 'package:todidu/utils/app_str.dart';
 import 'package:todidu/utils/constants.dart';
 import 'package:todidu/views/home/components/fab.dart';
 import 'package:todidu/views/home/components/home_app_bar.dart';
+import 'package:todidu/views/home/components/slider_drawer.dart';
 import 'package:todidu/views/home/widget/task_widget.dart';
 
 class HomeView extends StatefulWidget {
@@ -20,7 +21,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   final List<int> testing = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
-  GlobalKey<SliderDrawerState> dkey = GlobalKey<SliderDrawerState>();
+  GlobalKey<SliderDrawerState> drawerKey = GlobalKey<SliderDrawerState>();
 
   // check done tasks
   // int checkDoneTasks(List<Task> task) {}
@@ -38,11 +39,14 @@ class _HomeViewState extends State<HomeView> {
       // Body
       body: SliderDrawer(
         // Drawer
-        slider: Container(
-          color: Colors.red,
-        ),
+        key: drawerKey,
+        isDraggable: false,
+        slider: CustomDrawer(),
+        animationDuration: 1000,
 
-        appBar: const HomeAppBar(),
+        appBar: HomeAppBar(
+          drawerKey: drawerKey,
+        ),
 
         // main body
         child: _buildHomeBody(textTheme),

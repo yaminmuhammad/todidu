@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_cupertino_date_picker_fork/flutter_cupertino_date_picker_fork.dart';
 import 'package:todidu/extensions/space_exs.dart';
+import 'package:todidu/utils/app_colors.dart';
 import 'package:todidu/utils/app_str.dart';
+import 'package:todidu/views/tasks/components/date_time_selection.dart';
 import 'package:todidu/views/tasks/components/rep_textfield.dart';
 import 'package:todidu/views/tasks/widget/task_view_app_bar.dart';
 
@@ -36,14 +40,78 @@ class _TaskViewState extends State<TaskView> {
                 // Top Side Texts
                 _buildTopSideTexts(textTheme),
 
+                // Main Task View Activity
                 _buildMainTaskViewActivity(
                   textTheme,
                   context,
                 ),
+
+                // Bottom Side Button
+                _buildBottomSideButton(),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  // Bottom Side Button
+  Widget _buildBottomSideButton() {
+    return Padding(
+      padding: const EdgeInsets.only(
+        bottom: 20,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          // Delete Current Task Button
+          MaterialButton(
+            onPressed: () {
+              log("Task Deleted");
+            },
+            minWidth: 150,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            color: Colors.white,
+            height: 55,
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.close,
+                  color: AppColors.primaryColor,
+                ),
+                5.w,
+                const Text(
+                  AppStr.deleteTask,
+                  style: TextStyle(
+                    color: AppColors.primaryColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Add or Update Task Button
+          MaterialButton(
+            onPressed: () {
+              log("Task Added");
+            },
+            minWidth: 150,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            color: AppColors.primaryColor,
+            height: 55,
+            child: const Text(
+              AppStr.addTaskString,
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -79,16 +147,22 @@ class _TaskViewState extends State<TaskView> {
           // Time Select
           DateTimeSelectionWidget(
             onTap: () {
-              DatePicker.showDatePicker(
-                context,
-                maxDateTime: DateTime(2030, 4, 5),
-                minDateTime: DateTime.now(),
-                onConfirm: (dateTime, _) {},
+              showModalBottomSheet(
+                context: context,
+                builder: (_) => SizedBox(
+                  height: 254,
+                  child: TimePickerWidget(
+                    onChange: (_, __) {},
+                    dateFormat: 'HH:mm',
+                    onConfirm: (dateTime, _) {},
+                  ),
+                ),
               );
             },
-            title: AppStr.dateString,
+            title: AppStr.timeString,
           ),
 
+          // Date Select
           DateTimeSelectionWidget(
             onTap: () {
               DatePicker.showDatePicker(
@@ -125,7 +199,7 @@ class _TaskViewState extends State<TaskView> {
               text: "Add New Task",
               style: textTheme.titleLarge,
               children: [
-                TextSpan(
+                const TextSpan(
                   text: AppStr.taskString,
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
@@ -141,63 +215,6 @@ class _TaskViewState extends State<TaskView> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class DateTimeSelectionWidget extends StatelessWidget {
-  const DateTimeSelectionWidget({
-    super.key,
-    required this.onTap,
-    required this.title,
-  });
-
-  final VoidCallback onTap;
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    var textTheme = Theme.of(context).textTheme;
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
-        height: 55,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Colors.grey.shade300),
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Text(
-                title,
-                style: textTheme.headlineSmall,
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(right: 10),
-              width: 80,
-              height: 35,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.grey.shade100,
-              ),
-              child: Center(
-                child: Text(
-                  title,
-                  style: textTheme.titleSmall,
-                ),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

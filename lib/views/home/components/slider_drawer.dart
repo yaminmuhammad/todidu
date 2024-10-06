@@ -48,7 +48,7 @@ class CustomDrawer extends StatelessWidget {
           ),
           8.h,
           Text(
-            "Amir Husein",
+            "Mulyono",
             style: textTheme.displayMedium,
           ),
           Text(

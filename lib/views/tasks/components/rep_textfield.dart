@@ -4,11 +4,11 @@ import 'package:todidu/utils/app_str.dart';
 class RepTextField extends StatelessWidget {
   const RepTextField({
     super.key,
-    required this.titleTaskController,
+    required this.controller,
     this.isForDescription = false,
   });
 
-  final TextEditingController titleTaskController;
+  final TextEditingController controller;
   final bool isForDescription;
 
   @override
@@ -18,7 +18,7 @@ class RepTextField extends StatelessWidget {
       width: double.infinity,
       child: ListTile(
         title: TextFormField(
-          controller: titleTaskController,
+          controller: controller,
           maxLines: !isForDescription ? 6 : null,
           cursorHeight: !isForDescription ? 60 : null,
           style: const TextStyle(

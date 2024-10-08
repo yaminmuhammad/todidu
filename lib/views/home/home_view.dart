@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:lottie/lottie.dart';
 import 'package:todidu/extensions/space_exs.dart';
+import 'package:todidu/models/task.dart';
 import 'package:todidu/utils/app_colors.dart';
 import 'package:todidu/utils/app_str.dart';
 import 'package:todidu/utils/constants.dart';
@@ -153,7 +154,18 @@ class _HomeViewState extends State<HomeView> {
                         key: Key(
                           index.toString(),
                         ),
-                        child: const TaskWidget(),
+                        child: TaskWidget(
+                          // This is only for test
+
+                          task: Task(
+                            id: '1',
+                            title: 'Home Task',
+                            subTitle: 'Cleaning the room',
+                            createdAtTime: DateTime.now(),
+                            updatedAtDate: DateTime.now(),
+                            isCompleted: true,
+                          ),
+                        ),
                       );
                     },
                   )

@@ -35,7 +35,8 @@ dynamic noTaskWarning(BuildContext context) {
   return PanaraInfoDialog.show(
     context,
     title: AppStr.oopsMsg,
-    message: AppStr.oopsMsg,
+    message:
+        "There is no Task For Delete!\n Try adding some and then try to delete it!",
     buttonText: "Okay",
     onTapDismiss: () {
       Navigator.pop(context);
@@ -52,8 +53,8 @@ dynamic deleteAllTaskWarning(BuildContext context) {
     message:
         "Do you really want to delete all tasks? You will no be able to undo this action!",
     panaraDialogType: PanaraDialogType.error,
-    confirmButtonText: '',
-    cancelButtonText: '',
+    confirmButtonText: 'Yes',
+    cancelButtonText: 'No',
     barrierDismissible: false,
     onTapConfirm: () {
       // clear all box data

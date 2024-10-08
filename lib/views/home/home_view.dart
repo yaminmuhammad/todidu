@@ -1,8 +1,10 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
+import 'package:hive/hive.dart';
 import 'package:lottie/lottie.dart';
 import 'package:todidu/extensions/space_exs.dart';
+import 'package:todidu/main.dart';
 import 'package:todidu/models/task.dart';
 import 'package:todidu/utils/app_colors.dart';
 import 'package:todidu/utils/app_str.dart';
@@ -20,44 +22,77 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  final List<int> testing = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+  // final List<int> testing = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
   GlobalKey<SliderDrawerState> drawerKey = GlobalKey<SliderDrawerState>();
 
   // check done tasks
   // int checkDoneTasks(List<Task> task) {}
 
+  dynamic valueOfIndicator(List<Task> task) {
+    if (task.isNotEmpty) {
+      return task.length;
+    } else {
+      return 3;
+    }
+  }
+
+  int checkDoneTask(List<Task> tasks) {
+    int i = 0;
+    for (Task doneTask in tasks) {
+      if (doneTask.isCompleted) {
+        i++;
+      }
+    }
+    return i;
+  }
+
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
+    final base = BaseWidget.of(context);
 
-    return Scaffold(
-      backgroundColor: Colors.white,
+    return ValueListenableBuilder(
+      valueListenable: base.dataStore.listenToTasks(),
+      builder: (ctx, Box<Task> box, Widget? child) {
+        var tasks = box.values.toList();
 
-      // FAB
-      floatingActionButton: const Fab(),
+        // for sorting list of tasks
+        tasks.sort((a, b) => a.createdAtDate.compareTo(b.createdAtDate));
 
-      // Body
-      body: SliderDrawer(
-        // Drawer
-        key: drawerKey,
-        isDraggable: false,
-        slider: CustomDrawer(),
-        animationDuration: 1000,
+        return Scaffold(
+          backgroundColor: Colors.white,
 
-        appBar: HomeAppBar(
-          drawerKey: drawerKey,
-        ),
+          // FAB
+          floatingActionButton: const Fab(),
 
-        // main body
-        child: _buildHomeBody(textTheme),
-      ),
+          // Body
+          body: SliderDrawer(
+            // Drawer
+            key: drawerKey,
+            isDraggable: false,
+            slider: CustomDrawer(),
+            animationDuration: 1000,
+
+            appBar: HomeAppBar(
+              drawerKey: drawerKey,
+            ),
+
+            // main body
+            child: _buildHomeBody(textTheme, base, tasks),
+          ),
+        );
+      },
     );
   }
 
   // Home Body
 
-  Widget _buildHomeBody(TextTheme textTheme) {
+  Widget _buildHomeBody(
+    TextTheme textTheme,
+    BaseWidget base,
+    List<Task> tasks,
+  ) {
     return SizedBox(
       width: double.infinity,
       height: double.infinity,
@@ -75,11 +110,11 @@ class _HomeViewState extends State<HomeView> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // progress indicator
-                const SizedBox(
+                SizedBox(
                   width: 30,
                   height: 30,
                   child: CircularProgressIndicator(
-                    value: 1 / 3,
+                    value: checkDoneTask(tasks) / valueOfIndicator(tasks),
                     backgroundColor: Colors.grey,
                     valueColor: AlwaysStoppedAnimation(
                       AppColors.primaryColor,
@@ -101,7 +136,7 @@ class _HomeViewState extends State<HomeView> {
                     ),
                     3.h,
                     Text(
-                      "1 of 3 task",
+                      "${checkDoneTask(tasks)} of ${tasks.length} task",
                       style: textTheme.titleMedium,
                     ),
                   ],
@@ -125,15 +160,18 @@ class _HomeViewState extends State<HomeView> {
           Expanded(
             // width: double.infinity,
             // height: 745,
-            child: testing.isNotEmpty
+            child: tasks.isNotEmpty
                 ? ListView.builder(
-                    itemCount: testing.length,
+                    itemCount: tasks.length,
                     scrollDirection: Axis.vertical,
                     itemBuilder: (context, index) {
+                      var task = tasks[index];
+
                       return Dismissible(
                         direction: DismissDirection.horizontal,
                         onDismissed: (_) {
                           // remove current task from db
+                          base.dataStore.deleteTask(task: task);
                         },
                         background: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -152,20 +190,12 @@ class _HomeViewState extends State<HomeView> {
                           ],
                         ),
                         key: Key(
-                          index.toString(),
+                          task.id,
                         ),
                         child: TaskWidget(
-                          // This is only for test
+                            // This is only for test
 
-                          task: Task(
-                            id: '1',
-                            title: 'Home Task',
-                            subTitle: 'Cleaning the room',
-                            createdAtTime: DateTime.now(),
-                            updatedAtDate: DateTime.now(),
-                            isCompleted: true,
-                          ),
-                        ),
+                            task: task),
                       );
                     },
                   )
@@ -181,7 +211,7 @@ class _HomeViewState extends State<HomeView> {
                           height: 200,
                           child: Lottie.asset(
                             lottieURL,
-                            animate: testing.isNotEmpty ? false : true,
+                            animate: tasks.isNotEmpty ? false : true,
                           ),
                         ),
                       ),

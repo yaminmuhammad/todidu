@@ -1,11 +1,12 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_cupertino_date_picker_fork/flutter_cupertino_date_picker_fork.dart';
+import 'package:intl/intl.dart';
 import 'package:todidu/extensions/space_exs.dart';
+import 'package:todidu/main.dart';
 import 'package:todidu/models/task.dart';
 import 'package:todidu/utils/app_colors.dart';
 import 'package:todidu/utils/app_str.dart';
+import 'package:todidu/utils/constants.dart';
 import 'package:todidu/views/tasks/components/date_time_selection.dart';
 import 'package:todidu/views/tasks/components/rep_textfield.dart';
 import 'package:todidu/views/tasks/widget/task_view_app_bar.dart';
@@ -27,6 +28,98 @@ class TaskView extends StatefulWidget {
 }
 
 class _TaskViewState extends State<TaskView> {
+  var title;
+  var subTitle;
+  DateTime? time;
+  DateTime? date;
+
+  // show selected time as string format
+  String showTime(DateTime? time) {
+    if (widget.task?.createdAtTime == null) {
+      if (time == null) {
+        return DateFormat('hh:mm a').format(DateTime.now()).toString();
+      } else {
+        return DateFormat('hh:mm a').format(time).toString();
+      }
+    } else {
+      return DateFormat('hh:mm a')
+          .format(widget.task!.createdAtTime)
+          .toString();
+    }
+  }
+
+  String showDate(DateTime? date) {
+    if (widget.task?.createdAtDate == null) {
+      if (date == null) {
+        return DateFormat.yMMMEd().format(DateTime.now()).toString();
+      } else {
+        return DateFormat.yMMMEd().format(date).toString();
+      }
+    } else {
+      return DateFormat.yMMMEd().format(widget.task!.createdAtDate).toString();
+    }
+  }
+
+  // init date
+  DateTime showDateAsDateTime(DateTime? date) {
+    if (widget.task?.createdAtDate == null) {
+      if (date == null) {
+        return DateTime.now();
+      } else {
+        return date;
+      }
+    } else {
+      return widget.task!.createdAtDate;
+    }
+  }
+
+  // Main Func for creating or updating task
+  dynamic isTaskAlreadyExistUpdateOtherWiseCreate() {
+    // Update Current Task
+    if (widget.titleTaskController?.text != null &&
+        widget.descriptionTaskController?.text != null) {
+      try {
+        widget.titleTaskController?.text = title;
+
+        widget.descriptionTaskController?.text = subTitle;
+
+        widget.task!.save();
+
+        Navigator.pop(context);
+      } catch (e) {
+        updateTaskWarning(context);
+      }
+    } else {
+      if (title != null && subTitle != null) {
+        var task = Task.create(
+          title: title,
+          subTitle: subTitle,
+          createdAtTime: time,
+          createdAtDate: date,
+        );
+
+        BaseWidget.of(context).dataStore.addTask(task: task);
+        Navigator.pop(context);
+      } else {
+        emptyWarning(context);
+      }
+    }
+  }
+
+  // deleteTask
+  dynamic deleteTask() {
+    return widget.task?.delete();
+  }
+
+  bool isTaskAlreadyExist() {
+    if (widget.titleTaskController?.text == null &&
+        widget.descriptionTaskController?.text == null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var textTheme = Theme.of(context).textTheme;
@@ -34,6 +127,7 @@ class _TaskViewState extends State<TaskView> {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
+        backgroundColor: Colors.white,
         // App Bar
         appBar: const TaskViewAppBar(),
 
@@ -69,40 +163,46 @@ class _TaskViewState extends State<TaskView> {
         bottom: 20,
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: isTaskAlreadyExist()
+            ? MainAxisAlignment.center
+            : MainAxisAlignment.spaceEvenly,
         children: [
-          // Delete Current Task Button
-          MaterialButton(
-            onPressed: () {
-              log("Task Deleted");
-            },
-            minWidth: 150,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            color: Colors.white,
-            height: 55,
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.close,
-                  color: AppColors.primaryColor,
-                ),
-                5.w,
-                const Text(
-                  AppStr.deleteTask,
-                  style: TextStyle(
-                    color: AppColors.primaryColor,
+          isTaskAlreadyExist()
+              ? Container()
+              :
+              // Delete Current Task Button
+              MaterialButton(
+                  onPressed: () {
+                    deleteTask();
+                    Navigator.pop(context);
+                  },
+                  minWidth: 150,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  color: Colors.white,
+                  height: 55,
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.close,
+                        color: AppColors.primaryColor,
+                      ),
+                      5.w,
+                      const Text(
+                        AppStr.deleteTask,
+                        style: TextStyle(
+                          color: AppColors.primaryColor,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
-          ),
 
           // Add or Update Task Button
           MaterialButton(
             onPressed: () {
-              log("Task Added");
+              isTaskAlreadyExistUpdateOtherWiseCreate();
             },
             minWidth: 150,
             shape: RoundedRectangleBorder(
@@ -110,8 +210,10 @@ class _TaskViewState extends State<TaskView> {
             ),
             color: AppColors.primaryColor,
             height: 55,
-            child: const Text(
-              AppStr.addTaskString,
+            child: Text(
+              isTaskAlreadyExist()
+                  ? AppStr.addTaskString
+                  : AppStr.updateTaskString,
               style: TextStyle(
                 color: Colors.white,
               ),
@@ -141,6 +243,12 @@ class _TaskViewState extends State<TaskView> {
           // Task Title
           RepTextField(
             controller: widget.titleTaskController,
+            onChanged: (String inputTitle) {
+              title = inputTitle;
+            },
+            onFieldSubmitted: (String inputTitle) {
+              title = inputTitle;
+            },
           ),
 
           10.h,
@@ -148,6 +256,12 @@ class _TaskViewState extends State<TaskView> {
           RepTextField(
             controller: widget.descriptionTaskController,
             isForDescription: true,
+            onChanged: (String inputSubTitle) {
+              subTitle = inputSubTitle;
+            },
+            onFieldSubmitted: (String inputSubTitle) {
+              subTitle = inputSubTitle;
+            },
           ),
 
           // Time Select
@@ -158,14 +272,24 @@ class _TaskViewState extends State<TaskView> {
                 builder: (_) => SizedBox(
                   height: 254,
                   child: TimePickerWidget(
-                    onChange: (_, __) {},
+                    initDateTime: showDateAsDateTime(time),
                     dateFormat: 'HH:mm',
-                    onConfirm: (dateTime, _) {},
+                    onChange: (_, __) {},
+                    onConfirm: (dateTime, _) {
+                      setState(() {
+                        if (widget.task?.createdAtTime == null) {
+                          time = dateTime;
+                        } else {
+                          widget.task!.createdAtTime = dateTime;
+                        }
+                      });
+                    },
                   ),
                 ),
               );
             },
             title: AppStr.timeString,
+            time: showTime(time),
           ),
 
           // Date Select
@@ -173,12 +297,23 @@ class _TaskViewState extends State<TaskView> {
             onTap: () {
               DatePicker.showDatePicker(
                 context,
+                initialDateTime: showDateAsDateTime(date),
                 maxDateTime: DateTime(2030, 4, 5),
                 minDateTime: DateTime.now(),
-                onConfirm: (dateTime, _) {},
+                onConfirm: (dateTime, _) {
+                  setState(() {
+                    if (widget.task?.createdAtDate == null) {
+                      date = dateTime;
+                    } else {
+                      widget.task!.createdAtDate = dateTime;
+                    }
+                  });
+                },
               );
             },
             title: AppStr.dateString,
+            isTime: true,
+            time: showDate(date),
           ),
         ],
       ),
@@ -202,7 +337,9 @@ class _TaskViewState extends State<TaskView> {
           ),
           RichText(
             text: TextSpan(
-              text: "Add New Task",
+              text: isTaskAlreadyExist()
+                  ? AppStr.addNewTask
+                  : AppStr.updateCurrentTask,
               style: textTheme.titleLarge,
               children: [
                 const TextSpan(

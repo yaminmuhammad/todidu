@@ -10,7 +10,7 @@ class Task extends HiveObject {
     required this.title,
     required this.subTitle,
     required this.createdAtTime,
-    required this.updatedAtDate,
+    required this.createdAtDate,
     required this.isCompleted,
   });
 
@@ -22,8 +22,8 @@ class Task extends HiveObject {
   final String subTitle;
   @HiveField(3) // createdAtTime
   DateTime createdAtTime;
-  @HiveField(4) // updatedAtDate
-  DateTime updatedAtDate;
+  @HiveField(4) // createdAtDate
+  DateTime createdAtDate;
   @HiveField(5) // isCompleted
   bool isCompleted;
 
@@ -32,14 +32,14 @@ class Task extends HiveObject {
     required String? title,
     required String? subTitle,
     required DateTime? createdAtTime,
-    required DateTime? updatedAtDate,
+    required DateTime? createdAtDate,
   }) =>
       Task(
         id: const Uuid().v1(),
         title: title ?? "",
         subTitle: subTitle ?? "",
         createdAtTime: createdAtTime ?? DateTime.now(),
-        updatedAtDate: updatedAtDate ?? DateTime.now(),
+        createdAtDate: createdAtDate ?? DateTime.now(),
         isCompleted: false,
       );
 }

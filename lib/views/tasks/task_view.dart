@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_cupertino_date_picker_fork/flutter_cupertino_date_picker_fork.dart';
 import 'package:intl/intl.dart';
@@ -86,6 +84,8 @@ class _TaskViewState extends State<TaskView> {
         widget.descriptionTaskController?.text = subTitle;
 
         widget.task!.save();
+
+        Navigator.pop(context);
       } catch (e) {
         updateTaskWarning(context);
       }
@@ -99,10 +99,16 @@ class _TaskViewState extends State<TaskView> {
         );
 
         BaseWidget.of(context).dataStore.addTask(task: task);
+        Navigator.pop(context);
       } else {
         emptyWarning(context);
       }
     }
+  }
+
+  // deleteTask
+  dynamic deleteTask() {
+    return widget.task?.delete();
   }
 
   bool isTaskAlreadyExist() {
@@ -121,6 +127,7 @@ class _TaskViewState extends State<TaskView> {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
+        backgroundColor: Colors.white,
         // App Bar
         appBar: const TaskViewAppBar(),
 
@@ -166,7 +173,8 @@ class _TaskViewState extends State<TaskView> {
               // Delete Current Task Button
               MaterialButton(
                   onPressed: () {
-                    // isTaskAlreadyExistUpdateOtherWiseCreate();
+                    deleteTask();
+                    Navigator.pop(context);
                   },
                   minWidth: 150,
                   shape: RoundedRectangleBorder(
@@ -202,8 +210,10 @@ class _TaskViewState extends State<TaskView> {
             ),
             color: AppColors.primaryColor,
             height: 55,
-            child: const Text(
-              AppStr.addTaskString,
+            child: Text(
+              isTaskAlreadyExist()
+                  ? AppStr.addTaskString
+                  : AppStr.updateTaskString,
               style: TextStyle(
                 color: Colors.white,
               ),

@@ -35,7 +35,8 @@ dynamic noTaskWarning(BuildContext context) {
   return PanaraInfoDialog.show(
     context,
     title: AppStr.oopsMsg,
-    message: AppStr.oopsMsg,
+    message:
+        "There is no Task For Delete!\n Try adding some and then try to delete it!",
     buttonText: "Okay",
     onTapDismiss: () {
       Navigator.pop(context);

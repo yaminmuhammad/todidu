@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:todidu/models/task.dart';
 import 'package:todidu/utils/app_colors.dart';
+import 'package:todidu/views/tasks/task_view.dart';
 
 class TaskWidget extends StatefulWidget {
   const TaskWidget({
@@ -37,7 +39,18 @@ class _TaskWidgetState extends State<TaskWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (ctx) => TaskView(
+              titleTaskController: textEditingControllerForTitle,
+              descriptionTaskController: textEditingControllerForSubTitle,
+              task: widget.task,
+            ),
+          ),
+        );
+      },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 600),
         margin: const EdgeInsets.symmetric(
@@ -64,7 +77,8 @@ class _TaskWidgetState extends State<TaskWidget> {
           // Check Icon
           leading: GestureDetector(
             onTap: () {
-              // checklist or unchecklist task
+              widget.task.isCompleted = !widget.task.isCompleted;
+              widget.task.save();
             },
             child: AnimatedContainer(
               duration: const Duration(

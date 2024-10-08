@@ -29,6 +29,24 @@ class _HomeViewState extends State<HomeView> {
   // check done tasks
   // int checkDoneTasks(List<Task> task) {}
 
+  dynamic valueOfIndicator(List<Task> task) {
+    if (task.isNotEmpty) {
+      return task.length;
+    } else {
+      return 3;
+    }
+  }
+
+  int checkDoneTask(List<Task> tasks) {
+    int i = 0;
+    for (Task doneTask in tasks) {
+      if (doneTask.isCompleted) {
+        i++;
+      }
+    }
+    return i;
+  }
+
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
@@ -38,6 +56,9 @@ class _HomeViewState extends State<HomeView> {
       valueListenable: base.dataStore.listenToTasks(),
       builder: (ctx, Box<Task> box, Widget? child) {
         var tasks = box.values.toList();
+
+        // for sorting list of tasks
+        tasks.sort((a, b) => a.createdAtDate.compareTo(b.createdAtDate));
 
         return Scaffold(
           backgroundColor: Colors.white,
@@ -89,11 +110,11 @@ class _HomeViewState extends State<HomeView> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // progress indicator
-                const SizedBox(
+                SizedBox(
                   width: 30,
                   height: 30,
                   child: CircularProgressIndicator(
-                    value: 1 / 3,
+                    value: checkDoneTask(tasks) / valueOfIndicator(tasks),
                     backgroundColor: Colors.grey,
                     valueColor: AlwaysStoppedAnimation(
                       AppColors.primaryColor,
@@ -115,7 +136,7 @@ class _HomeViewState extends State<HomeView> {
                     ),
                     3.h,
                     Text(
-                      "1 of 3 task",
+                      "${checkDoneTask(tasks)} of ${tasks.length} task",
                       style: textTheme.titleMedium,
                     ),
                   ],

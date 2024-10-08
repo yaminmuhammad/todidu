@@ -166,7 +166,7 @@ class _TaskViewState extends State<TaskView> {
               // Delete Current Task Button
               MaterialButton(
                   onPressed: () {
-                    isTaskAlreadyExistUpdateOtherWiseCreate();
+                    // isTaskAlreadyExistUpdateOtherWiseCreate();
                   },
                   minWidth: 150,
                   shape: RoundedRectangleBorder(
@@ -194,7 +194,7 @@ class _TaskViewState extends State<TaskView> {
           // Add or Update Task Button
           MaterialButton(
             onPressed: () {
-              log("Task Added");
+              isTaskAlreadyExistUpdateOtherWiseCreate();
             },
             minWidth: 150,
             shape: RoundedRectangleBorder(

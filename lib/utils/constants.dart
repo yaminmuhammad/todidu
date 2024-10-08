@@ -52,8 +52,8 @@ dynamic deleteAllTaskWarning(BuildContext context) {
     message:
         "Do you really want to delete all tasks? You will no be able to undo this action!",
     panaraDialogType: PanaraDialogType.error,
-    confirmButtonText: '',
-    cancelButtonText: '',
+    confirmButtonText: 'Yes',
+    cancelButtonText: 'No',
     barrierDismissible: false,
     onTapConfirm: () {
       // clear all box data

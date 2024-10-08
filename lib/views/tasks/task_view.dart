@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_cupertino_date_picker_fork/flutter_cupertino_date_picker_fork.dart';
 import 'package:todidu/extensions/space_exs.dart';
+import 'package:todidu/models/task.dart';
 import 'package:todidu/utils/app_colors.dart';
 import 'package:todidu/utils/app_str.dart';
 import 'package:todidu/views/tasks/components/date_time_selection.dart';
@@ -10,17 +11,22 @@ import 'package:todidu/views/tasks/components/rep_textfield.dart';
 import 'package:todidu/views/tasks/widget/task_view_app_bar.dart';
 
 class TaskView extends StatefulWidget {
-  const TaskView({super.key});
+  const TaskView({
+    super.key,
+    required this.titleTaskController,
+    required this.descriptionTaskController,
+    required this.task,
+  });
+
+  final TextEditingController? titleTaskController;
+  final TextEditingController? descriptionTaskController;
+  final Task? task;
 
   @override
   State<TaskView> createState() => _TaskViewState();
 }
 
 class _TaskViewState extends State<TaskView> {
-  final TextEditingController titleTaskController = TextEditingController();
-  final TextEditingController descriptionTaskController =
-      TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     var textTheme = Theme.of(context).textTheme;
@@ -134,13 +140,13 @@ class _TaskViewState extends State<TaskView> {
 
           // Task Title
           RepTextField(
-            controller: titleTaskController,
+            controller: widget.titleTaskController,
           ),
 
           10.h,
 
           RepTextField(
-            controller: descriptionTaskController,
+            controller: widget.descriptionTaskController,
             isForDescription: true,
           ),
 

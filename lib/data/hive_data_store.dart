@@ -3,6 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:todidu/models/task.dart';
 
+// CRUD
 class HiveDataStore {
   // Box Name - String
   static const boxName = 'taskBox';

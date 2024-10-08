@@ -25,6 +25,9 @@ Future<void> main() async {
   runApp(BaseWidget(child: const MyApp()));
 }
 
+// the inherited widget provides us with a convient way
+// to pass data to between widget
+
 class BaseWidget extends InheritedWidget {
   BaseWidget({Key? key, required this.child}) : super(key: key, child: child);
   final HiveDataStore dataStore = HiveDataStore();

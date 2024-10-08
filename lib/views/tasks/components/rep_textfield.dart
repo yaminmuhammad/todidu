@@ -8,7 +8,7 @@ class RepTextField extends StatelessWidget {
     this.isForDescription = false,
   });
 
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final bool isForDescription;
 
   @override
